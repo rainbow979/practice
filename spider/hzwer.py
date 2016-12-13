@@ -1,26 +1,30 @@
-# 统计博客hzwer.com上的代码行数
-# -*- coding: utf-8 -*-
-
-__author__ = 'hzwer'
-
 import re
 import requests
 
+__author__ = 'hzwer'
+
 home = 'http://hzwer.com/'
-tot = 0
-page = 0
- 
-for i in range(1, 10000):
-    url = home + str(i) + '.html' #生成url
+LINE_NUM = 0
+PAGE_NUM = 0
+
+
+def GetPage(url):
+    global LINE_NUM, PAGE_NUM
     r = requests.get(url)
     content = r.text
-    pattern = re.compile('-webkit-tab-size:4; tab-size:4; font-size: 15px !important; line-height: 16px !important;">\n(.*?)</textarea>', re.S) #正则匹配
+    pattern = re.compile('line-height: 16px !important;">\n(.*?)</text', re.S)
     code = re.findall(pattern, content)
     if(code):
-        length = 0
+        sum = 0
         for j in code:
-            length = length + len(j.splitlines())
-            tot += length
-            print('url: {} {}行代码，合计{}行代码'.format(url, length, tot))
-            page = page + 1  
-print('共{}个页面，{}行代码'.format(page, tot))                
+            sum = sum + len(j.splitlines())
+        LINE_NUM = LINE_NUM + sum
+        PAGE_NUM = LINE_NUM + 1
+        print('url: {} {}行代码，合计{}行代码'.format(url, sum, LINE_NUM))
+
+
+if __name__ == '__main__':
+    for i in range(1, 10000):
+        url = home + str(i) + '.html'
+        GetPage(url)
+    print('共{}个页面，{}行代码'.format(PAGE_NUM, LINE_NUM))
