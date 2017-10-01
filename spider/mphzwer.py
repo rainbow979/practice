@@ -1,7 +1,7 @@
 import re
 import requests
-import threading
 import multiprocessing
+from multiprocessing import Lock
 
 __author__ = 'hzwer'
 
@@ -9,7 +9,7 @@ home = 'http://hzwer.com/'
 LINE_NUM = 0
 PAGE_NUM = 0
 
-lock = threading.Lock()
+lock = Lock()
 
 
 def GetPage(url):
